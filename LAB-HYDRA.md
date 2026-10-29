@@ -13,7 +13,7 @@
 ## Habilitar en Vercel Preview
 
 1. En el proyecto de Vercel, abre **Settings → Environment Variables**.
-2. Añade `NOVATECH_LAB_ENABLED=true) solo para el entorno **Preview**; no lo asignes a Production.
+2. Añade `NOVATECH_LAB_ENABLED=true` solo para el entorno **Preview**; no lo asignes a Production.
 3. Crea/actualiza el deployment Preview de esta rama y confirma que la URL es la esperada antes de probar.
 4. Comprueba que `POST /api/login` devuelve `LOGIN_FAIL` con una contraseña incorrecta. Si devuelve `404`, el flag no está activo en ese Preview.
 

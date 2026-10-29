@@ -185,10 +185,12 @@
             <h1>NovaTech Solutions</h1>
             <p>Portal Corporativo Empresarial</p>
 
-            <input type="text" id="user" placeholder="Usuario">
-            <input type="password" id="pass" placeholder="Contraseña">
-            <button onclick="login()">Iniciar Sesión</button>
-            <div id="error"></div>
+            <form id="loginForm">
+                <input type="text" id="user" name="user" placeholder="Usuario" autocomplete="username" required>
+                <input type="password" id="pass" name="pass" placeholder="Contraseña" autocomplete="current-password" required>
+                <button type="submit">Iniciar Sesión</button>
+            </form>
+            <div id="error" role="status" aria-live="polite"></div>
         </div>
     </div>
 

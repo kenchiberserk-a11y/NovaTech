@@ -1,45 +1,52 @@
-const users = {
-    jperez: {
-        password: "Trabajo2026!",
-        role: "employee"
-    },
-    alopez: {
-        password: "RH2026#",
-        role: "employee"
-    },
-    mtorres: {
-        password: "Soporte2026$",
-        role: "employee"
-    },
-    admin: {
-        password: "admin",
-        role: "admin"
-    }
-};
+// NovaTech: autenticación de demostración mediante el endpoint /api/login.
+// Solo usar en un deployment de Preview aislado y con cuentas ficticias.
+document.getElementById("loginForm").addEventListener("submit", login);
 
-function login() {
+async function login(event) {
+    event.preventDefault();
+
     const user = document.getElementById("user").value.trim();
     const pass = document.getElementById("pass").value;
+    const error = document.getElementById("error");
+    const button = document.querySelector("#loginForm button");
 
-    if (users[user] && users[user].password === pass) {
+    error.textContent = "";
+    button.disabled = true;
+
+    try {
+        const response = await fetch("/api/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
+            body: new URLSearchParams({ user, pass }).toString()
+        });
+
+        if (!response.ok) {
+            error.textContent = "Usuario o contraseña incorrectos";
+            return;
+        }
+
+        const result = await response.json();
+        if (result.status !== "LOGIN_OK") {
+            error.textContent = "No se pudo iniciar sesión";
+            return;
+        }
+
         document.getElementById("loginScreen").style.display = "none";
         document.getElementById("dashboard").style.display = "block";
         document.getElementById("welcome").innerText = "Bienvenido " + user;
-        document.getElementById("error").innerText = "";
 
         let files = "";
-
-        if (users[user].role === "admin") {
+        if (result.role === "admin") {
             files = `
                 <div class="admin-alert">
-                    ⚠ MFA DESHABILITADO<br>
-                    ⚠ Intentos ilimitados
+                    ⚠ Cuenta de demostración<br>
+                    ⚠ Datos ficticios del laboratorio
                 </div>
-                <div class="file">📄 clientes.csv</div>
-                <div class="file">📄 empleados.csv</div>
-                <div class="file">📄 contratos.pdf</div>
-                <div class="file">📄 nomina_2026.xlsx</div>
-                <div class="file">📄 respaldo_finanzas.zip</div>
+                <div class="file">📄 clientes-demo.csv</div>
+                <div class="file">📄 empleados-demo.csv</div>
+                <div class="file">📄 contratos-demo.pdf</div>
+                <div class="file">📄 nomina-demo.xlsx</div>
+                <div class="file">📄 respaldo-demo.zip</div>
             `;
         } else {
             files = `
@@ -47,10 +54,11 @@ function login() {
                 <div class="file">📄 Calendario.pdf</div>
             `;
         }
-
         document.getElementById("fileArea").innerHTML = files;
-    } else {
-        document.getElementById("error").innerText = "Usuario o contraseña incorrectos";
+    } catch (err) {
+        error.textContent = "No se pudo conectar con el endpoint de autenticación";
+    } finally {
+        button.disabled = false;
     }
 }
 
